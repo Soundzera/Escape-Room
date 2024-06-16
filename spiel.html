@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Physik-Wort-Schüttel-Spiel</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+      #container {
+        margin-top: 100px;
+      }
+      #scrambled-word {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      input[type="text"] {
+        font-size: 18px;
+        padding: 5px;
+      }
+      #result {
+        margin-top: 20px;
+        font-size: 18px;
+      }
+      #next-button {
+        display: none;
+        margin-top: 20px;
+        font-size: 16px;
+        padding: 10px 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <h2>Willkommen beim Physik-Wort-Schüttel-Spiel!</h2>
+      <div id="scrambled-word"></div>
+      <input type="text" id="user-guess" placeholder="Dein Tipp" />
+      <br /><br />
+      <button onclick="checkGuess()">Prüfen</button>
+      <button id="next-button" onclick="resetGame()">Weiter</button>
+      <div id="result"></div>
+    </div>
+
+    <script>
+      var physicsWords = [
+        "gravitation",
+        "elektrizität",
+        "schwerkraft",
+        "magnetismus",
+        "lichtgeschwindigkeit",
+        "relativität",
+        "elektromagnetismus",
+        "quantenmechanik",
+      ];
+      var currentWord;
+      var attempts = 0;
+      var maxAttempts = 3;
+      var correctGuesses = 0;
+      var requiredCorrectGuesses = 5;
+
+      function scrambleWord(word) {
+        return word
+          .split("")
+          .sort(function () {
+            return 0.5 - Math.random();
+          })
+          .join("");
+      }
+
+      function chooseWord() {
+        return physicsWords[Math.floor(Math.random() * physicsWords.length)];
+      }
+
+      function resetGame() {
+        var word = chooseWord();
+        document.getElementById("scrambled-word").innerText =
+          scrambleWord(word);
+        document.getElementById("result").innerText = "";
+        document.getElementById("user-guess").value = "";
+        document.getElementById("user-guess").focus();
+        currentWord = word;
+        document.getElementById("next-button").style.display = "none";
+        attempts = 0;
+      }
+
+      function checkGuess() {
+        var userGuess = document
+          .getElementById("user-guess")
+          .value.toLowerCase();
+        attempts++;
+        if (userGuess === currentWord) {
+          correctGuesses++;
+          if (correctGuesses >= requiredCorrectGuesses) {
+            window.location.href = "gewonnen.html";
+          } else {
+            document.getElementById("result").innerText =
+              "Herzlichen Glückwunsch! Du hast das Wort richtig entwirrt.";
+            document.getElementById("next-button").style.display =
+              "inline-block";
+          }
+        } else {
+          if (attempts >= maxAttempts) {
+            document.getElementById("result").innerText =
+              "Entschuldigung, das ist nicht korrekt. Das richtige Wort ist: " +
+              currentWord;
+            document.getElementById("next-button").style.display =
+              "inline-block";
+          } else {
+            document.getElementById("result").innerText =
+              "Entschuldigung, das ist nicht korrekt. Versuche es erneut.";
+          }
+        }
+      }
+
+      resetGame();
+    </script>
+  </body>
+</html>
